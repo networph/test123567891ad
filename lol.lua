@@ -196,7 +196,7 @@ function library.new(library_title, cfg_location)
         BackgroundColor3 = Color3.fromRGB(128, 188, 4),  -- Green color
         BorderSizePixel = 0,
         Position = UDim2.new(0.5, 0, 0, 0),
-        Size = UDim2.new(1, 0, 0, 2),  -- Reduced height for less thickness
+        Size = UDim2.new(1, 0, 0, 1),  -- Reduced height for less thickness
     }, ImageLabel)
     
     
@@ -320,13 +320,12 @@ end
             Size = UDim2.new(1, 0, 0, 418),
         }, Tab)
 
-
         if is_first_tab then
             is_first_tab = false
             selected_tab = TabButton
+
             TabImage.ImageColor3 = Color3.fromRGB(128, 188, 4)
-            TabContent.Visible = true
-            LineIndicator.Visible = true  -- Show the line for the first tab
+            Tab.Visible = true
         end
 
 TabButton.MouseButton1Down:Connect(function()
