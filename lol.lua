@@ -320,12 +320,13 @@ end
             Size = UDim2.new(1, 0, 0, 418),
         }, Tab)
 
+
         if is_first_tab then
             is_first_tab = false
             selected_tab = TabButton
-
             TabImage.ImageColor3 = Color3.fromRGB(128, 188, 4)
-            Tab.Visible = true
+            TabContent.Visible = true
+            LineIndicator.Visible = true  -- Show the line for the first tab
         end
 
 TabButton.MouseButton1Down:Connect(function()
