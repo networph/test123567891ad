@@ -267,9 +267,9 @@ end
 
         local ActiveBorder = library:create("Frame", {
             Name = "ActiveBorder",
-            BackgroundColor3 = activeGreen,
+            BackgroundColor3 = Color3.fromRGB(99, 182, 20),
             BorderSizePixel = 0,
-            Size = UDim2.new(0, 3, 1, 0),  -- Width of 3 pixels, adjust as needed
+            Size = UDim2.new(0, 2, 1, 0),  -- Width of 3 pixels, adjust as needed
             Position = UDim2.new(0, 0, 0, 0),  -- Positioned on the left side
             Visible = false,  -- Initially hidden
         }, TabButton)
