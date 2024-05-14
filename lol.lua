@@ -265,6 +265,16 @@ end
             ImageColor3 = Color3.fromRGB(100, 100, 100),
         }, TabButton)
 
+        local ActiveBorder = library:create("Frame", {
+            Name = "ActiveBorder",
+            BackgroundColor3 = activeGreen,
+            BorderSizePixel = 0,
+            Size = UDim2.new(0, 3, 1, 0),  -- Width of 3 pixels, adjust as needed
+            Position = UDim2.new(0, 0, 0, 0),  -- Positioned on the left side
+            Visible = false,  -- Initially hidden
+        }, TabButton)
+    
+
         local TabSections = Instance.new("Frame")
         local TabFrames = Instance.new("Frame")
 
@@ -305,19 +315,37 @@ end
 
         TabButton.MouseButton1Down:Connect(function()
             if selected_tab == TabButton then return end
-
-            for _,TButtons in pairs (TabButtons:GetChildren()) do
+        
+            -- Reset the image colors and hide all tabs
+            for _,TButtons in pairs(TabButtons:GetChildren()) do
                 if not TButtons:IsA("TextButton") then continue end
-
+        
+                -- Reset color to default when not selected
                 library:tween(TButtons.ImageLabel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(100, 100, 100)})
+        
+                -- Hide active border on all other tabs
+                if TButtons:FindFirstChild("ActiveBorder") then
+                    TButtons.ActiveBorder.Visible = false
+                end
             end
-            for _,Tab in pairs (Tabs:GetChildren()) do
+        
+            -- Hide all tab contents
+            for _,Tab in pairs(Tabs:GetChildren()) do
                 Tab.Visible = false
             end
+        
+            -- Show the selected tab and set the image color and border
             Tab.Visible = true
             selected_tab = TabButton
             library:tween(TabImage, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(99, 182, 20)})
+        
+            -- Make the left border visible on the selected tab
+            if TabButton:FindFirstChild("ActiveBorder") then
+                TabButton.ActiveBorder.Visible = true
+            end
         end)
+        
+
         TabButton.MouseEnter:Connect(function()
             if selected_tab == TabButton then return end
 
