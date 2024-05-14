@@ -1955,9 +1955,13 @@ end
                         }, SliderButton)
 
                         local UIGradient = library:create("UIGradient", {
-                            Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(79, 95, 239)), ColorSequenceKeypoint.new(1, Color3.fromRGB(56, 67, 163))},
+                            Color = ColorSequence.new{
+                                ColorSequenceKeypoint.new(0, Color3.fromRGB(128, 188, 4)), -- lighter green
+                                ColorSequenceKeypoint.new(1, Color3.fromRGB(85, 125, 3))   -- darker green
+                            },
                             Rotation = 90,
                         }, SliderFrame)
+                        
 
                         local SliderValue = library:create("TextLabel", {
                             Name = "SliderValue",
