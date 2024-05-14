@@ -181,6 +181,7 @@ function library.new(library_title, cfg_location)
         Name = "Main",
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = Color3.fromRGB(15, 15, 15),
+        BorderSizePixel = 0,  -- Ensure no border around the ImageButton
         Position = UDim2.new(0.5, 0, 0.5, 0),
         Size = UDim2.new(0, 700, 0, 500),
         Image = "http://www.roblox.com/asset/?id=7300333488",
@@ -188,14 +189,17 @@ function library.new(library_title, cfg_location)
         Modal = true,
     }, ScreenGui)
     
+    
     local TopBorder = library:create("Frame", {
         Name = "TopBorder",
         AnchorPoint = Vector2.new(0.5, 0),
         BackgroundColor3 = Color3.fromRGB(128, 188, 4),  -- Green color
         BorderSizePixel = 0,
         Position = UDim2.new(0.5, 0, 0, 0),
-        Size = UDim2.new(1, 0, 0, 4),  -- Adjust the height here for border thickness
+        Size = UDim2.new(1, 0, 0, 4),  -- Correct height to show only at the top
     }, ImageLabel)
+    
+    
     
 
     function menu.GetPosition()
