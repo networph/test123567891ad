@@ -183,7 +183,7 @@ function library.new(library_title, cfg_location)
         BackgroundColor3 = Color3.fromRGB(15, 15, 15),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         Size = UDim2.new(0, 700, 0, 500),
-        Image = "https://www.roblox.com/catalog/17493980114",
+        Image = "rbxassetid://17493980114",
         AutoButtonColor = false,
         Modal = true,
     }, ScreenGui)
