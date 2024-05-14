@@ -316,22 +316,23 @@ end
 
         TabButton.MouseButton1Down:Connect(function()
             if selected_tab == TabButton then return end
-        
+            
             -- Reset the image colors and hide all tabs
-            for _,TButtons in pairs(TabButtons:GetChildren()) do
-                if not TButtons:IsA("TextButton") then continue end
-        
-                -- Reset color to default when not selected
-                library:tween(TButtons.ImageLabel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(100, 100, 100)})
-        
-                -- Hide active border on all other tabs
-                if TButtons:FindFirstChild("ActiveBorder") then
-                    TButtons.ActiveBorder.Visible = false
+            for _, TButtons in pairs(TabButtons:GetChildren()) do
+                if TButtons:IsA("TextButton") then
+                    -- Reset color to default when not selected
+                    library:tween(TButtons.ImageLabel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(100, 100, 100)})
+                    
+                    -- Hide active border on all other tabs
+                    local activeBorder = TButtons:FindFirstChild("ActiveBorder")
+                    if activeBorder then
+                        activeBorder.Visible = false
+                    end
                 end
             end
         
             -- Hide all tab contents
-            for _,Tab in pairs(Tabs:GetChildren()) do
+            for _, Tab in pairs(Tabs:GetChildren()) do
                 Tab.Visible = false
             end
         
@@ -339,12 +340,14 @@ end
             Tab.Visible = true
             selected_tab = TabButton
             library:tween(TabImage, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(99, 182, 20)})
-        
+            
             -- Make the left border visible on the selected tab
-            if TabButton:FindFirstChild("ActiveBorder") then
-                TabButton.ActiveBorder.Visible = true
+            local activeBorder = TabButton:FindFirstChild("ActiveBorder")
+            if activeBorder then
+                activeBorder.Visible = true
             end
         end)
+        
         
 
         TabButton.MouseEnter:Connect(function()
