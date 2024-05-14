@@ -196,7 +196,7 @@ function library.new(library_title, cfg_location)
         BackgroundColor3 = Color3.fromRGB(128, 188, 4),  -- Green color
         BorderSizePixel = 0,
         Position = UDim2.new(0.5, 0, 0, 0),
-        Size = UDim2.new(1, 0, 0, 4),  -- Correct height to show only at the top
+        Size = UDim2.new(1, 0, 0, 2),  -- Reduced height for less thickness
     }, ImageLabel)
     
     
