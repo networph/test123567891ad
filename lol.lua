@@ -199,16 +199,18 @@ function library.new(library_title, cfg_location)
         Size = UDim2.new(1, 0, 0, 2),  -- Reduced height for less thickness
     }, ImageLabel)
     
-    -- Create and configure the UIGradient for the specified color transition
+    -- Create and configure the UIGradient for a smooth color transition
     local gradient = Instance.new("UIGradient")
     gradient.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 255)),     -- Blue
-        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(128, 0, 128)),   -- Purple
-        ColorSequenceKeypoint.new(0.66, Color3.fromRGB(255, 255, 255)), -- White-ish
+        ColorSequenceKeypoint.new(0.25, Color3.fromRGB(128, 0, 128)),   -- Purple
+        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(192, 192, 255)), -- Light Purple (toward white)
+        ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 255, 255)), -- White-ish
         ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 0))    -- Yellow
     })
     gradient.Rotation = 90
     gradient.Parent = TopBorder
+    
     
     
     
