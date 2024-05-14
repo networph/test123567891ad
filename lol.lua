@@ -269,7 +269,7 @@ end
             Name = "ActiveBorder",
             BackgroundColor3 = Color3.fromRGB(99, 182, 20),
             BorderSizePixel = 0,
-            Size = UDim2.new(0, 2, 1, 0),  -- Width of 3 pixels, adjust as needed
+            Size = UDim2.new(0, 1, 1, 0),  -- Width of 3 pixels, adjust as needed
             Position = UDim2.new(0, 0, 0, 0),  -- Positioned on the left side
             Visible = false,  -- Initially hidden
         }, TabButton)
@@ -308,9 +308,9 @@ end
         if is_first_tab then
             is_first_tab = false
             selected_tab = TabButton
-
             TabImage.ImageColor3 = Color3.fromRGB(99, 182, 20)
             Tab.Visible = true
+            ActiveBorder.Visible = true  -- Make sure the ActiveBorder is visible
         end
 
         TabButton.MouseButton1Down:Connect(function()
