@@ -181,6 +181,7 @@ function library.new(library_title, cfg_location)
         Name = "Main",
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = Color3.fromRGB(15, 15, 15),
+        BorderColor3 = Color3.fromRGB(17, 17, 17),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         Size = UDim2.new(0, 700, 0, 500),
         Image = "rbxassetid://17493980114",
@@ -265,16 +266,6 @@ end
             ImageColor3 = Color3.fromRGB(100, 100, 100),
         }, TabButton)
 
-        local ActiveBorder = library:create("Frame", {
-            Name = "ActiveBorder",
-            BackgroundColor3 = Color3.fromRGB(99, 182, 20),
-            BorderSizePixel = 0,
-            Size = UDim2.new(0, 1, 1, 0),  -- Width of 3 pixels, adjust as needed
-            Position = UDim2.new(0, 0, 0, 0),  -- Positioned on the left side
-            Visible = false,  -- Initially hidden
-        }, TabButton)
-    
-
         local TabSections = Instance.new("Frame")
         local TabFrames = Instance.new("Frame")
 
@@ -308,44 +299,26 @@ end
         if is_first_tab then
             is_first_tab = false
             selected_tab = TabButton
+
             TabImage.ImageColor3 = Color3.fromRGB(99, 182, 20)
             Tab.Visible = true
-            ActiveBorder.Visible = true  -- Make sure the ActiveBorder is visible
         end
 
         TabButton.MouseButton1Down:Connect(function()
             if selected_tab == TabButton then return end
-        
-            -- Reset the image colors and hide all tabs
-            for _,TButtons in pairs(TabButtons:GetChildren()) do
+
+            for _,TButtons in pairs (TabButtons:GetChildren()) do
                 if not TButtons:IsA("TextButton") then continue end
-        
-                -- Reset color to default when not selected
+
                 library:tween(TButtons.ImageLabel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(100, 100, 100)})
-        
-                -- Hide active border on all other tabs
-                if TButtons:FindFirstChild("ActiveBorder") then
-                    TButtons.ActiveBorder.Visible = false
-                end
             end
-        
-            -- Hide all tab contents
-            for _,Tab in pairs(Tabs:GetChildren()) do
+            for _,Tab in pairs (Tabs:GetChildren()) do
                 Tab.Visible = false
             end
-        
-            -- Show the selected tab and set the image color and border
             Tab.Visible = true
             selected_tab = TabButton
             library:tween(TabImage, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(99, 182, 20)})
-        
-            -- Make the left border visible on the selected tab
-            if TabButton:FindFirstChild("ActiveBorder") then
-                TabButton.ActiveBorder.Visible = true
-            end
         end)
-        
-
         TabButton.MouseEnter:Connect(function()
             if selected_tab == TabButton then return end
 
