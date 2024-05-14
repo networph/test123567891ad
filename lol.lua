@@ -273,6 +273,14 @@ end
             Text = "",
         }, TabButtons)
 
+        local LineIndicator = library:create("Frame", {
+            Name = "LineIndicator",
+            BackgroundColor3 = Color3.fromRGB(128, 188, 4),  -- green color
+            Size = UDim2.new(0, 2, 1, 0),  -- 2 pixels wide, full height
+            Position = UDim2.new(0, 0, 0, 0),  -- aligned to the left
+            Visible = false,  -- initially hidden
+        }, TabButton)
+
         local TabImage = library:create("ImageLabel", {
             AnchorPoint = Vector2.new(0.5, 0.5),
             BackgroundTransparency = 1,
@@ -320,21 +328,34 @@ end
             Tab.Visible = true
         end
 
-        TabButton.MouseButton1Down:Connect(function()
-            if selected_tab == TabButton then return end
+TabButton.MouseButton1Down:Connect(function()
+    if selected_tab == TabButton then return end
 
-            for _,TButtons in pairs (TabButtons:GetChildren()) do
-                if not TButtons:IsA("TextButton") then continue end
+    -- Reset all tabs and hide their indicators
+    for _, TButtons in pairs(TabButtons:GetChildren()) do
+        if TButtons:IsA("TextButton") then
+            library:tween(TButtons.ImageLabel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(100, 100, 100)})
+            if TButtons:FindFirstChild("LineIndicator") then
+                TButtons.LineIndicator.Visible = false
+            end
+        end
+    end
 
-                library:tween(TButtons.ImageLabel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(100, 100, 100)})
-            end
-            for _,Tab in pairs (Tabs:GetChildren()) do
-                Tab.Visible = false
-            end
-            Tab.Visible = true
-            selected_tab = TabButton
-            library:tween(TabImage, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(128, 188, 4)})
-        end)
+    -- Hide all tab content
+    for _, Tab in pairs(Tabs:GetChildren()) do
+        Tab.Visible = false
+    end
+
+    -- Show the selected tab content and indicator
+    Tab.Visible = true
+    selected_tab = TabButton
+    library:tween(TabImage, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(128, 188, 4)})
+    if TabButton:FindFirstChild("LineIndicator") then
+        TabButton.LineIndicator.Visible = true
+    end
+end)
+
+
         TabButton.MouseEnter:Connect(function()
             if selected_tab == TabButton then return end
 
