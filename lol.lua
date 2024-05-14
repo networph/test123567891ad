@@ -193,11 +193,24 @@ function library.new(library_title, cfg_location)
     local TopBorder = library:create("Frame", {
         Name = "TopBorder",
         AnchorPoint = Vector2.new(0.5, 0),
-        BackgroundColor3 = Color3.fromRGB(128, 188, 4),  -- Green color
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),  -- Set to white to blend with the gradient
         BorderSizePixel = 0,
         Position = UDim2.new(0.5, 0, 0, 0),
         Size = UDim2.new(1, 0, 0, 2),  -- Reduced height for less thickness
     }, ImageLabel)
+    
+    -- Create and configure the UIGradient for the specified color transition
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 255)),     -- Blue
+        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(128, 0, 128)),   -- Purple
+        ColorSequenceKeypoint.new(0.66, Color3.fromRGB(255, 255, 255)), -- White-ish
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 0))    -- Yellow
+    })
+    gradient.Rotation = 90
+    gradient.Parent = TopBorder
+    
+    
     
     
     
