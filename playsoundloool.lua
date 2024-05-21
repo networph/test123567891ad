@@ -1,19 +1,11 @@
 -- Create the PlaySound library
 local PlaySound = {}
 
--- Sound effect list
-PlaySound.sfx = {
-    ["Skeet"] = "4753603610",
-    ["Rust"] = "3744371091",
-    ["Neverlose"] = "8679627751",
-    ["Mario"] = "5709456554",
-}
-
-
-PlaySound.Skeet = PlaySound.sfx["Skeet"]
-PlaySound.Rust = PlaySound.sfx["Rust"]
-PlaySound.Neverlose = PlaySound.sfx["Neverlose"]
-PlaySound.Mario = PlaySound.sfx["Mario"]]
+-- Predefined sound sequence
+PlaySound.Loaded = "3333907347,8679627751"
+PlaySound.Skeet = "4753603610"
+PlaySound.Rust = "3744371091"
+PlaySound.NL = "8679627751"
 
 -- Function to play a single sound
 function PlaySound:playSound(Id, Volume, Pitch)
