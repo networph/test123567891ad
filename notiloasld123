@@ -64,8 +64,8 @@ Notification.Visible = false
 
 Container.Name = "Container"
 Container.Parent = Notification
-Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Container.BackgroundTransparency = 1.000
+Container.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Container.BackgroundTransparency = 0.7 -- Less transparent (previously 1.000)
 Container.BorderSizePixel = 0
 Container.Position = UDim2.new(1.14999998, 0, 0, 0)
 Container.Size = UDim2.new(1, 0, 0, 0)
@@ -153,8 +153,8 @@ Accent.Size = UDim2.new(1, 0, 0, 1)
 
 Body.Name = "Body"
 Body.Parent = Container
-Body.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Body.BackgroundTransparency = 1.000
+Body.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Darker background
+Body.BackgroundTransparency = 0.7 -- Less transparent (previously 1.000)
 Body.BorderSizePixel = 0
 Body.ClipsDescendants = true
 Body.Position = UDim2.new(0, 0, 0, 32)
@@ -251,4 +251,5 @@ function lib.prompt(title, description, closeTime)
 end
 
 return lib
+
 
