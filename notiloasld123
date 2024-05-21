@@ -153,8 +153,8 @@ Accent.Size = UDim2.new(1, 0, 0, 1)
 
 Body.Name = "Body"
 Body.Parent = Container
-Body.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Body.BackgroundTransparency = 1.000
+Body.BackgroundColor3 = Color3.fromRGB(176, 196, 222) -- Changed to your blue color
+Body.BackgroundTransparency = 0.700 -- Adjusted transparency to make it less transparent and more visible
 Body.BorderSizePixel = 0
 Body.ClipsDescendants = true
 Body.Position = UDim2.new(0, 0, 0, 32)
