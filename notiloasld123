@@ -64,8 +64,8 @@ Notification.Visible = false
 
 Container.Name = "Container"
 Container.Parent = Notification
-Container.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Container.BackgroundTransparency = 0.7 -- Less transparent (previously 1.000)
+Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Container.BackgroundTransparency = 1.000
 Container.BorderSizePixel = 0
 Container.Position = UDim2.new(1.14999998, 0, 0, 0)
 Container.Size = UDim2.new(1, 0, 0, 0)
@@ -250,6 +250,4 @@ function lib.prompt(title, description, closeTime)
     prompt(title, description, closeTime, true)
 end
 
-return lib -- updated
-
-
+return lib -- updateddddd
