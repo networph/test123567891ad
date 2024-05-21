@@ -250,6 +250,6 @@ function lib.prompt(title, description, closeTime)
     prompt(title, description, closeTime, true)
 end
 
-return lib
+return lib -- updated
 
 
