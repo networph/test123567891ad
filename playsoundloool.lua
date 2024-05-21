@@ -26,7 +26,6 @@ function PlaySound:playSounds(soundIds, Volume, Pitch)
     
     for _, soundId in ipairs(soundList) do
         self:playSound(soundId, Volume, Pitch)
-        wait(1)  -- Wait for 1 second before playing the next sound
     end
 end
 
