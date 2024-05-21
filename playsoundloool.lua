@@ -6,6 +6,10 @@ PlaySound.Loaded = "3333907347,8679627751"
 PlaySound.Skeet = "4753603610"
 PlaySound.Rust = "3744371091"
 PlaySound.NL = "8679627751"
+PlaySound.Error = "160715357"
+PlaySound.TFCRIT = "296102734"
+PlaySound.Steveoof = "5869422451"
+PlaySound.TFHITS = "3455144981"
 
 -- Function to play a single sound
 function PlaySound:playSound(Id, Volume, Pitch)
