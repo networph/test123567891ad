@@ -152,6 +152,7 @@ function Library:Window(options)
     SideBar.Name = "SideBar"
     SideBar.Parent = Body
     SideBar.BackgroundColor3 = Color3.fromRGB(26, 36, 48)
+    SideBar.BackgroundTransparency = 0.5 -- Adjust this value to control the transparency
     SideBar.BorderSizePixel = 0
     SideBar.Size = UDim2.new(0, 187, 0, 516)
 
