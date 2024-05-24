@@ -4,14 +4,14 @@ local NeverloseVersion = "v1.1A."
 
 local TweenService = game:GetService("TweenService")
 local input = game:GetService("UserInputService")
-local Lighting = game:GetService("Lighting") -- Add this line
+local Lighting = game:GetService("Lighting")
 
 -- Create BlurEffect instance
 local blurEffect = Instance.new("BlurEffect")
 blurEffect.Size = 24 -- Adjust the blur intensity
 blurEffect.Parent = Lighting
 
--- Ensure the BlurEffect is not active initially
+-- Ensure the BlurEffect is active initially
 blurEffect.Enabled = true
 
 for i,v in next, game.CoreGui:GetChildren() do
