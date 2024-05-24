@@ -138,7 +138,7 @@ function Library:Window(options)
     SG.Name = "Neverlose"
 
     Body.Name = "Body"
-    Body.Parent = SG
+    Body.Parent = SG -- Changed to make Body a direct child of SG
     Body.AnchorPoint = Vector2.new(0.5, 0.5)
     Body.BackgroundColor3 = Color3.fromRGB(9, 8, 13)
     Body.BorderSizePixel = 0
@@ -150,10 +150,11 @@ function Library:Window(options)
     bodyCorner.Parent = Body
 
     SideBar.Name = "SideBar"
-    SideBar.Parent = Body
+    SideBar.Parent = SG -- Changed to make SideBar a direct child of SG
     SideBar.BackgroundColor3 = Color3.fromRGB(26, 36, 48)
-    SideBar.BackgroundTransparency = 1 -- Adjust this value to control the transparency
+    SideBar.BackgroundTransparency = 1 -- Set to 1 for full transparency
     SideBar.BorderSizePixel = 0
+    SideBar.Position = UDim2.new(0.32, 0, 0.5, 0) -- Adjusted position
     SideBar.Size = UDim2.new(0, 187, 0, 516)
 
     sidebarCorner.CornerRadius = UDim.new(0, 4)
@@ -163,6 +164,7 @@ function Library:Window(options)
     sbLine.Name = "sbLine"
     sbLine.Parent = SideBar
     sbLine.BackgroundColor3 = Color3.fromRGB(15, 23, 36)
+    sbLine.BackgroundTransparency = 1 -- Set to 1 for full transparency
     sbLine.BorderSizePixel = 0
     sbLine.Position = UDim2.new(0.99490571, 0, 0, 0)
     sbLine.Size = UDim2.new(0, 3, 0, 516)
@@ -1214,36 +1216,33 @@ function Library:Window(options)
                             keybindLabel.Text = short[inputbegan.KeyCode.Name] or inputbegan.KeyCode.Name
                             oldKey = inputbegan.KeyCode.Name
                         else
-                            TweenService:Create(keybindButton, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                            TweenService:Create(keybindLabel, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
                                 TextColor3 = Color3.fromRGB(157, 171, 182)
                             }):Play()
-                            TweenService:Create(keybindLabel, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                            TweenService:Create(keybindButton, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
                                 TextColor3 = Color3.fromRGB(157, 171, 182)
                             }):Play()
                             keybindLabel.Text = short[oldKey] or oldKey
                         end
                     end)
 
-                    game:GetService("UserInputService").InputBegan:connect(function(key, focused)
-                        if not focused then
-                            if key.KeyCode.Name == oldKey then
-                                options.callback(oldKey)
-                            end
-                        end
-                    end)
-
                     keybindLabel.Name = "keybindLabel"
                     keybindLabel.Parent = keybindButton
-                    keybindLabel.AnchorPoint = Vector2.new(0.5, 0.5)
                     keybindLabel.BackgroundColor3 = Color3.fromRGB(157, 171, 182)
                     keybindLabel.BackgroundTransparency = 1.000
-                    keybindLabel.Position = UDim2.new(0.910000026, 0, 0.5, 0)
-                    keybindLabel.Size = UDim2.new(0, 36, 0, 22)
+                    keybindLabel.Position = UDim2.new(0.85, 0, 0.0909090936, 0)
+                    keybindLabel.Size = UDim2.new(0, 35, 0, 18)
                     keybindLabel.Font = Enum.Font.Gotham
-                    keybindLabel.Text = oldKey .. " "
+                    keybindLabel.Text = short[options.default.Name] or options.default.Name
                     keybindLabel.TextColor3 = Color3.fromRGB(157, 171, 182)
-                    keybindLabel.TextSize = 14.000
+                    keybindLabel.TextSize = 12.000
                     keybindLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+                    game:GetService("UserInputService").InputBegan:Connect(function(input)
+                        if input.KeyCode.Name == oldKey then
+                            options.callback()
+                        end
+                    end)
                 end
 
                 return elements
@@ -1257,5 +1256,6 @@ function Library:Window(options)
 
     return tabsections
 end
+
 
 return Library
