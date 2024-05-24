@@ -12,7 +12,7 @@ blurEffect.Size = 24 -- Adjust the blur intensity
 blurEffect.Parent = Lighting
 
 -- Ensure the BlurEffect is not active initially
-blurEffect.Enabled = false
+blurEffect.Enabled = true
 
 for i,v in next, game.CoreGui:GetChildren() do
     if v:IsA("ScreenGui") and v.Name == "Neverlose" then
