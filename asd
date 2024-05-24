@@ -4,6 +4,15 @@ local NeverloseVersion = "v1.1A."
 
 local TweenService = game:GetService("TweenService")
 local input = game:GetService("UserInputService")
+local Lighting = game:GetService("Lighting") -- Add this line
+
+-- Create BlurEffect instance
+local blurEffect = Instance.new("BlurEffect")
+blurEffect.Size = 24 -- Adjust the blur intensity
+blurEffect.Parent = Lighting
+
+-- Ensure the BlurEffect is not active initially
+blurEffect.Enabled = false
 
 for i,v in next, game.CoreGui:GetChildren() do
     if v:IsA("ScreenGui") and v.Name == "Neverlose" then
@@ -95,9 +104,13 @@ local function clickEffect(options)
 end
 
 function Library:Toggle(value)
-    if game:GetServer("CoreGui"):FindFirstChild("Neverlose") == nil then return end
-    enabled = (type(value) == "boolean" and value) or game:GetServer("CoreGui"):FindFirstChild("Neverlose").Enabled
-    game:GetServer("CoreGui"):FindFirstChild("Neverlose").Enabled = not enabled
+    local screenGui = game:GetService("CoreGui"):FindFirstChild("Neverlose")
+    if not screenGui then return end
+    local enabled = (type(value) == "boolean" and value) or screenGui.Enabled
+    screenGui.Enabled = not enabled
+
+    -- Toggle blur effect based on GUI visibility
+    blurEffect.Enabled = screenGui.Enabled
 end
 
 function Library:Window(options)
