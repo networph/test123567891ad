@@ -4,15 +4,15 @@ local NeverloseVersion = "v1.1A."
 
 local TweenService = game:GetService("TweenService")
 local input = game:GetService("UserInputService")
-local Lighting = game:GetService("Lighting")
+local Lighting = game:GetService("Lighting") -- Add this line
 
 -- Create BlurEffect instance
 local blurEffect = Instance.new("BlurEffect")
 blurEffect.Size = 24 -- Adjust the blur intensity
 blurEffect.Parent = Lighting
 
--- Ensure the BlurEffect is active initially
-blurEffect.Enabled = true
+-- Ensure the BlurEffect is not active initially
+blurEffect.Enabled = false
 
 for i,v in next, game.CoreGui:GetChildren() do
     if v:IsA("ScreenGui") and v.Name == "Neverlose" then
@@ -122,6 +122,7 @@ function Library:Window(options)
     local bodyCorner = Instance.new("UICorner")
 
     local SideBar = Instance.new("Frame")
+    local sidebarBackground = Instance.new("Frame") -- Add this line
     local sidebarCorner = Instance.new("UICorner")
     local sbLine = Instance.new("Frame")
 
@@ -138,7 +139,7 @@ function Library:Window(options)
     SG.Name = "Neverlose"
 
     Body.Name = "Body"
-    Body.Parent = SG -- Changed to make Body a direct child of SG
+    Body.Parent = SG
     Body.AnchorPoint = Vector2.new(0.5, 0.5)
     Body.BackgroundColor3 = Color3.fromRGB(9, 8, 13)
     Body.BorderSizePixel = 0
@@ -150,19 +151,23 @@ function Library:Window(options)
     bodyCorner.Parent = Body
 
     SideBar.Name = "SideBar"
-    SideBar.Parent = SG -- Changed to make SideBar a direct child of SG
-    SideBar.BackgroundColor3 = Color3.fromRGB(26, 36, 48)
+    SideBar.Parent = Body
     SideBar.BackgroundTransparency = 1 -- Set to 1 for full transparency
     SideBar.BorderSizePixel = 0
-    SideBar.Position = UDim2.new(0.32, 0, 0.5, 0) -- Adjusted position
     SideBar.Size = UDim2.new(0, 187, 0, 516)
+
+    sidebarBackground.Name = "sidebarBackground"
+    sidebarBackground.Parent = SideBar
+    sidebarBackground.BackgroundColor3 = Color3.fromRGB(26, 36, 48)
+    sidebarBackground.Size = UDim2.new(1, 0, 1, 0)
+    sidebarBackground.BackgroundTransparency = 0.5 -- Adjust transparency as needed
 
     sidebarCorner.CornerRadius = UDim.new(0, 4)
     sidebarCorner.Name = "sidebarCorner"
-    sidebarCorner.Parent = SideBar
+    sidebarCorner.Parent = sidebarBackground -- Attach corner to the new background
 
     sbLine.Name = "sbLine"
-    sbLine.Parent = SideBar
+    sbLine.Parent = sidebarBackground -- Attach sbLine to the new background
     sbLine.BackgroundColor3 = Color3.fromRGB(15, 23, 36)
     sbLine.BackgroundTransparency = 1 -- Set to 1 for full transparency
     sbLine.BorderSizePixel = 0
@@ -1256,6 +1261,5 @@ function Library:Window(options)
 
     return tabsections
 end
-
 
 return Library
