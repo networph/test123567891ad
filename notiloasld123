@@ -1,253 +1,507 @@
-local isExistance = false
+local Flux = {RainbowColorValue = 0, HueSelectionPosition = 0}
+local PresetColor = Color3.fromRGB(66, 134, 255)
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local CloseBind = Enum.KeyCode.RightControl
 
-local Notifyt = Instance.new("ScreenGui")
-local NotificationParent = Instance.new("ScrollingFrame")
-local UIListLayout = Instance.new("UIListLayout")
-local UIPadding = Instance.new("UIPadding")
-local Notification = Instance.new("Frame")
-local Container = Instance.new("ImageButton")
-local Top = Instance.new("ImageLabel")
-local Exit = Instance.new("Frame")
-local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
-local Icon = Instance.new("ImageLabel")
-local Button = Instance.new("TextButton")
-local Title = Instance.new("TextLabel")
-local Accent = Instance.new("Frame")
-local Body = Instance.new("Frame")
-local Content = Instance.new("TextLabel")
-local UIPadding_2 = Instance.new("UIPadding")
-local UISizeConstraint = Instance.new("UISizeConstraint")
+local FluxLib = Instance.new("ScreenGui")
+FluxLib.Name = "FluxLib"
+FluxLib.Parent = game.CoreGui
+FluxLib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-if game.CoreGui:FindFirstChild("Notifyt") then
-    isExistance = true
-    Notifyt = game.CoreGui.Notifyt
-    NotificationParent = Notifyt.NotificationParent
-    Notification = Notifyt.Notification
+coroutine.wrap(
+	function()
+		while wait() do
+			Flux.RainbowColorValue = Flux.RainbowColorValue + 1 / 255
+			Flux.HueSelectionPosition = Flux.HueSelectionPosition + 1
+
+			if Flux.RainbowColorValue >= 1 then
+				Flux.RainbowColorValue = 0
+			end
+
+			if Flux.HueSelectionPosition == 80 then
+				Flux.HueSelectionPosition = 0
+			end
+		end
+	end
+)()
+
+local function MakeDraggable(topbarobject, object)
+	local Dragging = nil
+	local DragInput = nil
+	local DragStart = nil
+	local StartPosition = nil
+
+	local function Update(input)
+		local Delta = input.Position - DragStart
+		local pos =
+			UDim2.new(
+				StartPosition.X.Scale,
+				StartPosition.X.Offset + Delta.X,
+				StartPosition.Y.Scale,
+				StartPosition.Y.Offset + Delta.Y
+			)
+		object.Position = pos
+	end
+
+	topbarobject.InputBegan:Connect(
+		function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				Dragging = true
+				DragStart = input.Position
+				StartPosition = object.Position
+
+				input.Changed:Connect(
+					function()
+						if input.UserInputState == Enum.UserInputState.End then
+							Dragging = false
+						end
+					end
+				)
+			end
+		end
+	)
+
+	topbarobject.InputChanged:Connect(
+		function(input)
+			if
+				input.UserInputType == Enum.UserInputType.MouseMovement or
+					input.UserInputType == Enum.UserInputType.Touch
+			then
+				DragInput = input
+			end
+		end
+	)
+
+	UserInputService.InputChanged:Connect(
+		function(input)
+			if input == DragInput and Dragging then
+				Update(input)
+			end
+		end
+	)
 end
 
-Notifyt.Name = "Notifyt"
-Notifyt.Parent = game.CoreGui
-Notifyt.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-Notifyt.ResetOnSpawn = false
 
-NotificationParent.Name = "NotificationParent"
-NotificationParent.Parent = Notifyt
-NotificationParent.AnchorPoint = Vector2.new(1, 0)
-NotificationParent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-NotificationParent.BackgroundTransparency = 1.000
-NotificationParent.BorderSizePixel = 0
-NotificationParent.ClipsDescendants = false
-NotificationParent.Position = UDim2.new(1, 0, 0, -25)
-NotificationParent.Selectable = false
-NotificationParent.Size = UDim2.new(0, 275, 1, 0)
-NotificationParent.CanvasSize = UDim2.new(0, 0, 0, 0)
-NotificationParent.ScrollBarThickness = 0
-NotificationParent.ScrollingEnabled = false
 
-UIListLayout.Parent = NotificationParent
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-UIListLayout.Padding = UDim.new(0, 5)
+function Flux:Window(text, bottom,mainclr,toclose)
+	CloseBind = toclose or Enum.KeyCode.RightControl
+	PresetColor = mainclr or Color3.fromRGB(66, 134, 255)
+	local fs = false
+	local MainFrame = Instance.new("Frame")
+	local MainCorner = Instance.new("UICorner")
+	local LeftFrame = Instance.new("Frame")
+	local LeftCorner = Instance.new("UICorner")
+	local GlowTabHolder = Instance.new("ImageLabel")
+	local Title = Instance.new("TextLabel")
+	local BottomText = Instance.new("TextLabel")
+	local TabHold = Instance.new("Frame")
+	local TabLayout = Instance.new("UIListLayout")
+	local Drag = Instance.new("Frame")
+	local ContainerFolder = Instance.new("Folder")
 
-UIPadding.Parent = NotificationParent
-UIPadding.PaddingRight = UDim.new(0, 25)
+	MainFrame.Name = "MainFrame"
+	MainFrame.Parent = FluxLib
+	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	MainFrame.BackgroundColor3 = Color3.fromRGB(30, 33, 39) -- Darker color
+	MainFrame.ClipsDescendants = true
+	MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	MainFrame.Size = UDim2.new(0, 0, 0, 0)
 
-Notification.Name = "Notification"
-Notification.Parent = Notifyt
-Notification.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Notification.BackgroundTransparency = 1.000
-Notification.BorderSizePixel = 0
-Notification.Position = UDim2.new(1, 0, 0, 0)
-Notification.Size = UDim2.new(0, 250, 0, 0)
-Notification.Visible = false
+	MainCorner.CornerRadius = UDim.new(0, 5)
+	MainCorner.Name = "MainCorner"
+	MainCorner.Parent = MainFrame
 
-Container.Name = "Container"
-Container.Parent = Notification
-Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Container.BackgroundTransparency = 1.000
-Container.BorderSizePixel = 0
-Container.Position = UDim2.new(1.14999998, 0, 0, 0)
-Container.Size = UDim2.new(1, 0, 0, 0)
-Container.Image = "rbxassetid://6296184185"
-Container.ImageColor3 = Color3.fromRGB(0, 0, 0)
-Container.ImageTransparency = 0.500
-Container.ScaleType = Enum.ScaleType.Slice
-Container.SliceCenter = Rect.new(512, 512, 512, 512)
-Container.SliceScale = 0.012
+	LeftFrame.Name = "LeftFrame"
+	LeftFrame.Parent = MainFrame
+	LeftFrame.BackgroundColor3 = Color3.fromRGB(27, 29, 34) -- Darker color
+	LeftFrame.Size = UDim2.new(0, 205, 0, 484)
 
-Top.Name = "Top"
-Top.Parent = Container
-Top.BackgroundColor3 = Color3.fromRGB(248, 248, 248)
-Top.BackgroundTransparency = 1.000
-Top.BorderSizePixel = 0
-Top.Size = UDim2.new(1, 0, 0, 32)
-Top.ZIndex = 3
-Top.Image = "rbxassetid://6276641225"
-Top.ImageColor3 = Color3.fromRGB(176, 196, 222) -- Changed to your blue color
-Top.ImageTransparency = 0.600
-Top.ScaleType = Enum.ScaleType.Slice
-Top.SliceCenter = Rect.new(256, 256, 256, 256)
-Top.SliceScale = 0.022
+	LeftCorner.CornerRadius = UDim.new(0, 5)
+	LeftCorner.Name = "LeftCorner"
+	LeftCorner.Parent = LeftFrame
 
-Exit.Name = "Exit"
-Exit.Parent = Top
-Exit.AnchorPoint = Vector2.new(1, 0)
-Exit.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Exit.BackgroundTransparency = 1.000
-Exit.BorderColor3 = Color3.fromRGB(27, 42, 53)
-Exit.BorderSizePixel = 0
-Exit.ClipsDescendants = true
-Exit.LayoutOrder = 3
-Exit.Position = UDim2.new(1, 0, 0, 0)
-Exit.Size = UDim2.new(1, 0, 1, 0)
+	GlowTabHolder.Name = "GlowTabHolder"
+	GlowTabHolder.Parent = LeftFrame
+	GlowTabHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	GlowTabHolder.BackgroundTransparency = 1.000
+	GlowTabHolder.BorderSizePixel = 0
+	GlowTabHolder.Position = UDim2.new(0, -15, 0, -15)
+	GlowTabHolder.Size = UDim2.new(1, 30, 1, 30)
+	GlowTabHolder.ZIndex = 0
+	GlowTabHolder.Image = "rbxassetid://4996891970"
+	GlowTabHolder.ImageColor3 = Color3.fromRGB(15, 15, 15)
+	GlowTabHolder.ScaleType = Enum.ScaleType.Slice
+	GlowTabHolder.SliceCenter = Rect.new(20, 20, 280, 280)
 
-UIAspectRatioConstraint.Parent = Exit
+	Title.Name = "Title"
+	Title.Parent = LeftFrame
+	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Title.BackgroundTransparency = 1.000
+	Title.Position = UDim2.new(0.097560972, 0, 0.0475206636, 0)
+	Title.Size = UDim2.new(0, 111, 0, 34)
+	Title.Font = Enum.Font.GothamBold
+	Title.Text = text
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.TextSize = 25.000
+	Title.TextXAlignment = Enum.TextXAlignment.Left
 
-Icon.Name = "Icon"
-Icon.Parent = Exit
-Icon.AnchorPoint = Vector2.new(0.5, 0.5)
-Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Icon.BackgroundTransparency = 1.000
-Icon.BorderSizePixel = 0
-Icon.Position = UDim2.new(0.5, 0, 0.5, 0)
-Icon.Size = UDim2.new(0.5, 0, 0.5, 0)
-Icon.Image = "http://www.roblox.com/asset/?id=6415685859"
-Icon.ScaleType = Enum.ScaleType.Fit
+	BottomText.Name = "BottomText"
+	BottomText.Parent = LeftFrame
+	BottomText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	BottomText.BackgroundTransparency = 1.000
+	BottomText.Position = UDim2.new(0.097560972, 0, 0.0889999792, 0)
+	BottomText.Size = UDim2.new(0, 113, 0, 28)
+	BottomText.Font = Enum.Font.Gotham
+	BottomText.Text = bottom
+	BottomText.TextColor3 = Color3.fromRGB(255, 255, 255)
+	BottomText.TextSize = 14.000
+	BottomText.TextTransparency = 0.300
+	BottomText.TextXAlignment = Enum.TextXAlignment.Left
 
-Button.Name = "Button"
-Button.Parent = Exit
-Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Button.BackgroundTransparency = 1.000
-Button.BorderSizePixel = 0
-Button.Size = UDim2.new(1, 0, 1, 0)
-Button.ZIndex = 2
-Button.Font = Enum.Font.SourceSans
-Button.Text = ""
-Button.TextColor3 = Color3.fromRGB(0, 0, 0)
-Button.TextSize = 14.000
+	TabHold.Name = "TabHold"
+	TabHold.Parent = LeftFrame
+	TabHold.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TabHold.BackgroundTransparency = 1.000
+	TabHold.Position = UDim2.new(0, 0, 0.167355374, 0)
+	TabHold.Size = UDim2.new(0, 205, 0, 403)
 
-Title.Name = "Title"
-Title.Parent = Top
-Title.AnchorPoint = Vector2.new(1, 0)
-Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundTransparency = 1.000
-Title.BorderSizePixel = 0
-Title.Position = UDim2.new(1, 0, 0, 0)
-Title.Size = UDim2.new(1, -12, 1, 0)
-Title.Font = Enum.Font.GothamSemibold
-Title.Text = "Notification"
-Title.TextColor3 = Color3.fromRGB(240, 240, 240)
-Title.TextSize = 14.000
-Title.TextWrapped = true
-Title.TextXAlignment = Enum.TextXAlignment.Left
+	TabLayout.Name = "TabLayout"
+	TabLayout.Parent = TabHold
+	TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	TabLayout.Padding = UDim.new(0, 3)
 
-Accent.Name = "Accent"
-Accent.Parent = Top
-Accent.AnchorPoint = Vector2.new(0, 1)
-Accent.BackgroundColor3 = Color3.fromRGB(176, 196, 222) -- Changed to your blue color
-Accent.BackgroundTransparency = 0.300
-Accent.BorderSizePixel = 0
-Accent.Position = UDim2.new(0, 0, 1, 0)
-Accent.Size = UDim2.new(1, 0, 0, 1)
+	Drag.Name = "Drag"
+	Drag.Parent = MainFrame
+	Drag.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Drag.BackgroundTransparency = 1.000
+	Drag.Position = UDim2.new(0.290368259, 0, 0, 0)
+	Drag.Size = UDim2.new(0, 501, 0, 23)
 
-Body.Name = "Body"
-Body.Parent = Container
-Body.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Darker background
-Body.BackgroundTransparency = 0.7 -- Less transparent (previously 1.000)
-Body.BorderSizePixel = 0
-Body.ClipsDescendants = true
-Body.Position = UDim2.new(0, 0, 0, 32)
-Body.Size = UDim2.new(1, 0, 0, 0)
-
-Content.Name = "Content"
-Content.Parent = Body
-Content.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Content.BackgroundTransparency = 1.000
-Content.BorderSizePixel = 0
-Content.Size = UDim2.new(1, 0, 1, 0)
-Content.Font = Enum.Font.Gotham
-Content.Text = "Message Here. This is an example message prompt."
-Content.TextColor3 = Color3.fromRGB(230, 230, 230)
-Content.TextSize = 14.000
-Content.RichText = true
-Content.TextWrapped = true
-Content.TextXAlignment = Enum.TextXAlignment.Left
-Content.TextYAlignment = Enum.TextYAlignment.Top
-
-UIPadding_2.Parent = Body
-UIPadding_2.PaddingBottom = UDim.new(0, 12)
-UIPadding_2.PaddingLeft = UDim.new(0, 12)
-UIPadding_2.PaddingRight = UDim.new(0, 12)
-UIPadding_2.PaddingTop = UDim.new(0, 12)
-
-UISizeConstraint.Parent = Container
-UISizeConstraint.MaxSize = Vector2.new(math.huge, 120)
-
-Notification.AutomaticSize = Enum.AutomaticSize.Y
-Container.AutomaticSize = Enum.AutomaticSize.Y
-Body.AutomaticSize = Enum.AutomaticSize.Y
-
-if isExistance then
-    UIListLayout:Destroy()
-    UIPadding:Destroy()
-    Container:Destroy()
+	ContainerFolder.Name = "ContainerFolder"
+	ContainerFolder.Parent = MainFrame
+	
+	MakeDraggable(Drag,MainFrame)
+	MakeDraggable(LeftFrame,MainFrame)
+	MainFrame:TweenSize(UDim2.new(0, 706, 0, 484), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+	
+	local uitoggled = false
+	UserInputService.InputBegan:Connect(
+		function(io, p)
+			if io.KeyCode == CloseBind then
+				if uitoggled == false then
+					MainFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+					uitoggled = true
+					wait(.5)
+					FluxLib.Enabled = false
+				else
+					MainFrame:TweenSize(UDim2.new(0, 706, 0, 484), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+					FluxLib.Enabled = true
+					uitoggled = false
+				end
+			end
+		end
+	)
+	
+	function Flux:Notification(desc,buttontitle)
+		for i, v in next, MainFrame:GetChildren() do
+			if v.Name == "NotificationBase" then
+				v:Destroy()
+			end
+		end
+		local NotificationBase = Instance.new("TextButton")
+		local NotificationBaseCorner = Instance.new("UICorner")
+		local NotificationFrame = Instance.new("Frame")
+		local NotificationFrameCorner = Instance.new("UICorner")
+		local NotificationFrameGlow = Instance.new("ImageLabel")
+		local UnderTitle = Instance.new("Frame")
+		local UnderTitleCorner = Instance.new("UICorner")
+		local UnderTitleFrame = Instance.new("Frame")
+		local UnderTitleFrameCorner = Instance.new("UICorner")
+		local UnderTitleFrame1 = Instance.new("Frame")
+		local Text1 = Instance.new("TextLabel")
+		local OkayBtn = Instance.new("TextButton")
+		local OkayBtnCorner = Instance.new("UICorner")
+		local OkayBtnTitle = Instance.new("TextLabel")
+	
+		NotificationBase.Name = "NotificationBase"
+		NotificationBase.Parent = MainFrame
+		NotificationBase.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		NotificationBase.BackgroundTransparency = 1.000
+		NotificationBase.BorderSizePixel = 0
+		NotificationBase.ClipsDescendants = true
+		NotificationBase.Position = UDim2.new(0, 0, 0, 0)
+		NotificationBase.Size = UDim2.new(0, 706, 0, 484)
+		NotificationBase.AutoButtonColor = false
+		NotificationBase.Font = Enum.Font.SourceSans
+		NotificationBase.Text = ""
+		NotificationBase.TextColor3 = Color3.fromRGB(0, 0, 0)
+		NotificationBase.TextSize = 14.000
+	
+		NotificationBaseCorner.CornerRadius = UDim.new(0, 5)
+		NotificationBaseCorner.Name = "NotificationBaseCorner"
+		NotificationBaseCorner.Parent = NotificationBase
+	
+		NotificationFrame.Name = "NotificationFrame"
+		NotificationFrame.Parent = NotificationBase
+		NotificationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+		NotificationFrame.BackgroundColor3 = Color3.fromRGB(30, 33, 39) -- Darker color
+		NotificationFrame.ClipsDescendants = true
+		NotificationFrame.Position = UDim2.new(0.499, 0, 0.493827164, 0)
+		NotificationFrame.Size = UDim2.new(0, 0, 0, 0)
+	
+		NotificationFrameCorner.CornerRadius = UDim.new(0, 5)
+		NotificationFrameCorner.Name = "NotificationFrameCorner"
+		NotificationFrameCorner.Parent = NotificationFrame
+	
+		NotificationFrameGlow.Name = "NotificationFrameGlow"
+		NotificationFrameGlow.Parent = NotificationFrame
+		NotificationFrameGlow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		NotificationFrameGlow.BackgroundTransparency = 1.000
+		NotificationFrameGlow.BorderSizePixel = 0
+		NotificationFrameGlow.Position = UDim2.new(0, -15, 0, -15)
+		NotificationFrameGlow.Size = UDim2.new(1, 30, 1, 30)
+		NotificationFrameGlow.ZIndex = 0
+		NotificationFrameGlow.Image = "rbxassetid://4996891970"
+		NotificationFrameGlow.ImageColor3 = Color3.fromRGB(15, 15, 15)
+		NotificationFrameGlow.ScaleType = Enum.ScaleType.Slice
+		NotificationFrameGlow.SliceCenter = Rect.new(20, 20, 280, 280)
+	
+		UnderTitle.Name = "UnderTitle"
+		UnderTitle.Parent = NotificationFrame
+		UnderTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		UnderTitle.BackgroundTransparency = 1.000
+		UnderTitle.BorderSizePixel = 0
+		UnderTitle.ClipsDescendants = true
+		UnderTitle.Position = UDim2.new(0.116788321, 0, 0, 0)
+		UnderTitle.Size = UDim2.new(0, 200, 0, 8)
+	
+		UnderTitleCorner.CornerRadius = UDim.new(0, 5)
+		UnderTitleCorner.Name = "UnderTitleCorner"
+		UnderTitleCorner.Parent = UnderTitle
+	
+		UnderTitleFrame.Name = "UnderTitleFrame"
+		UnderTitleFrame.Parent = UnderTitle
+		UnderTitleFrame.BackgroundColor3 = PresetColor
+		UnderTitleFrame.BorderSizePixel = 0
+		UnderTitleFrame.Position = UDim2.new(-0.000100000001, 0, 0.5, 0)
+		UnderTitleFrame.Size = UDim2.new(0, 200, 0, 8)
+	
+		UnderTitleFrameCorner.CornerRadius = UDim.new(0, 5)
+		UnderTitleFrameCorner.Name = "UnderTitleFrameCorner"
+		UnderTitleFrameCorner.Parent = UnderTitleFrame
+	
+		UnderTitleFrame1.Name = "UnderTitleFrame1"
+		UnderTitleFrame1.Parent = UnderTitle
+		UnderTitleFrame1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		UnderTitleFrame1.BackgroundTransparency = 0.600
+		UnderTitleFrame1.BorderSizePixel = 0
+		UnderTitleFrame1.Position = UDim2.new(-0.000100000001, 0, 0.5, 0)
+		UnderTitleFrame1.Size = UDim2.new(0, 200, 0, 8)
+	
+		Text1.Name = "Text1"
+		Text1.Parent = NotificationFrame
+		Text1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Text1.BackgroundTransparency = 1.000
+		Text1.Position = UDim2.new(0.116788328, 0, 0.0370370419, 0)
+		Text1.Size = UDim2.new(0, 266, 0, 113)
+		Text1.Font = Enum.Font.Gotham
+		Text1.Text = desc
+		Text1.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Text1.TextSize = 13.000
+		Text1.TextWrapped = true
+		Text1.TextXAlignment = Enum.TextXAlignment.Left
+		Text1.TextYAlignment = Enum.TextYAlignment.Top
+	
+		OkayBtn.Name = "OkayBtn"
+		OkayBtn.Parent = NotificationFrame
+		OkayBtn.AnchorPoint = Vector2.new(0.5, 0.5)
+		OkayBtn.BackgroundColor3 = PresetColor
+		OkayBtn.Position = UDim2.new(0.501399338, 0, 0.733333349, 0)
+		OkayBtn.Size = UDim2.new(0, 220, 0, 32)
+		OkayBtn.AutoButtonColor = false
+		OkayBtn.Font = Enum.Font.SourceSans
+		OkayBtn.Text = ""
+		OkayBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+		OkayBtn.TextSize = 14.000
+	
+		OkayBtnCorner.CornerRadius = UDim.new(0, 4)
+		OkayBtnCorner.Name = "OkayBtnCorner"
+		OkayBtnCorner.Parent = OkayBtn
+	
+		OkayBtnTitle.Name = "OkayBtnTitle"
+		OkayBtnTitle.Parent = OkayBtn
+		OkayBtnTitle.AnchorPoint = Vector2.new(0.5, 0.5)
+		OkayBtnTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		OkayBtnTitle.BackgroundTransparency = 1.000
+		OkayBtnTitle.Position = UDim2.new(0.5, 0, 0.5, 0)
+		OkayBtnTitle.Size = UDim2.new(0, 190, 0, 20)
+		OkayBtnTitle.Font = Enum.Font.Gotham
+		OkayBtnTitle.Text = buttontitle
+		OkayBtnTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+		OkayBtnTitle.TextSize = 13.000
+		OkayBtnTitle.TextWrapped = true
+	
+		NotificationFrame:TweenSize(UDim2.new(0, 385, 0, 203), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .3, true)
+		wait(.4)
+		NotificationFrame:TweenSize(UDim2.new(0, 385, 0, 181), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .3, true)
+	
+		OkayBtn.MouseButton1Click:Connect(
+			function()
+				NotificationFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .3, true)
+				wait(.3)
+				NotificationBase:Destroy()
+			end
+		)
+	end
+	
+	
+	function Flux:Tab(text)
+		local Tab = Instance.new("TextButton")
+		local TabUICorner = Instance.new("UICorner")
+		local TextLabel = Instance.new("TextLabel")
+		local TabBtnIndicator = Instance.new("Frame")
+		local TabBtnIndicatorCorner = Instance.new("UICorner")
+		local Container = Instance.new("ScrollingFrame")
+		local ContainerLayout = Instance.new("UIListLayout")
+	
+		Tab.Name = "Tab"
+		Tab.Parent = TabHold
+		Tab.BackgroundColor3 = Color3.fromRGB(22, 24, 28) -- Darker color
+		Tab.Position = UDim2.new(0.0370175941, 0, 0, 0)
+		Tab.Size = UDim2.new(0, 109, 0, 28)
+		Tab.AutoButtonColor = false
+		Tab.Font = Enum.Font.SourceSans
+		Tab.Text = ""
+		Tab.TextColor3 = Color3.fromRGB(0, 0, 0)
+		Tab.TextSize = 14.000
+	
+		TabUICorner.CornerRadius = UDim.new(0, 4)
+		TabUICorner.Name = "TabUICorner"
+		TabUICorner.Parent = Tab
+	
+		TextLabel.Parent = Tab
+		TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		TextLabel.BackgroundTransparency = 1.000
+		TextLabel.Position = UDim2.new(0, 0, 0, 0)
+		TextLabel.Size = UDim2.new(0, 109, 0, 28)
+		TextLabel.Font = Enum.Font.Gotham
+		TextLabel.Text = text
+		TextLabel.TextColor3 = Color3.fromRGB(104, 104, 104)
+		TextLabel.TextSize = 14.000
+		TextLabel.TextWrapped = true
+	
+		TabBtnIndicator.Name = "TabBtnIndicator"
+		TabBtnIndicator.Parent = Tab
+		TabBtnIndicator.BackgroundColor3 = PresetColor
+		TabBtnIndicator.BorderSizePixel = 0
+		TabBtnIndicator.Position = UDim2.new(0, 0, 1, 0)
+		TabBtnIndicator.Size = UDim2.new(0, 0, 0, 2)
+	
+		TabBtnIndicatorCorner.CornerRadius = UDim.new(0, 9)
+		TabBtnIndicatorCorner.Name = "TabBtnIndicatorCorner"
+		TabBtnIndicatorCorner.Parent = TabBtnIndicator
+	
+		Container.Name = "Container"
+		Container.Parent = ContainerFolder
+		Container.Active = true
+		Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Container.BackgroundTransparency = 1.000
+		Container.BorderSizePixel = 0
+		Container.Position = UDim2.new(0.319948882, 0, 0.0247524753, 0)
+		Container.Size = UDim2.new(0, 548, 0, 307)
+		Container.CanvasSize = UDim2.new(0, 0, 0, 0)
+		Container.ScrollBarThickness = 3
+	
+		ContainerLayout.Name = "ContainerLayout"
+		ContainerLayout.Parent = Container
+		ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		ContainerLayout.Padding = UDim.new(0, 6)
+	
+		Tab.MouseButton1Click:Connect(
+			function()
+				for i, v in next, TabHold:GetChildren() do
+					if v:IsA("TextButton") then
+						TweenService:Create(
+							v.TabBtnIndicator,
+							TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+							{Size = UDim2.new(0, 0, 0, 2)}
+						):Play()
+						TweenService:Create(
+							v.TextLabel,
+							TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+							{TextColor3 = Color3.fromRGB(104, 104, 104)}
+						):Play()
+					end
+					Container.Visible = false
+				end
+	
+				for i, v in next, ContainerFolder:GetChildren() do
+					v.Visible = false
+				end
+	
+				Container.Visible = true
+				TweenService:Create(
+					TextLabel,
+					TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+					{TextColor3 = Color3.fromRGB(255, 255, 255)}
+				):Play()
+				TweenService:Create(
+					TabBtnIndicator,
+					TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+					{Size = UDim2.new(0, 109, 0, 2)}
+				):Play()
+			end
+		)
+	
+		local TabContent = {}
+	
+		function TabContent:Button(text, callback)
+			local Button = Instance.new("TextButton")
+			local ButtonCorner = Instance.new("UICorner")
+			local ButtonTitle = Instance.new("TextLabel")
+	
+			Button.Name = "Button"
+			Button.Parent = Container
+			Button.BackgroundColor3 = Color3.fromRGB(34, 38, 45) -- Darker color
+			Button.Size = UDim2.new(0, 528, 0, 36)
+			Button.AutoButtonColor = false
+			Button.Font = Enum.Font.SourceSans
+			Button.Text = ""
+			Button.TextColor3 = Color3.fromRGB(0, 0, 0)
+			Button.TextSize = 14.000
+	
+			ButtonCorner.CornerRadius = UDim.new(0, 4)
+			ButtonCorner.Name = "ButtonCorner"
+			ButtonCorner.Parent = Button
+	
+			ButtonTitle.Name = "ButtonTitle"
+			ButtonTitle.Parent = Button
+			ButtonTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ButtonTitle.BackgroundTransparency = 1.000
+			ButtonTitle.Position = UDim2.new(0, 12, 0, 0)
+			ButtonTitle.Size = UDim2.new(0, 187, 0, 36)
+			ButtonTitle.Font = Enum.Font.Gotham
+			ButtonTitle.Text = text
+			ButtonTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+			ButtonTitle.TextSize = 14.000
+			ButtonTitle.TextXAlignment = Enum.TextXAlignment.Left
+	
+			Button.MouseButton1Click:Connect(
+				function()
+					pcall(callback)
+				end
+			)
+		end
+	
+		return TabContent
+	end
+	
+	return Flux
 end
 
-local T = game:GetService('TweenService')
-local t = TweenInfo.new(0.5, Enum.EasingStyle.Quint)
-local tp = NotificationParent
+return library
 
-function prompt(title, text, closeTime, close)
-    local Prompt = Notification:Clone()
-    local Sound = Instance.new('Sound', Notification)
-
-    Prompt.Visible = true
-    Prompt.Container.Top.Title.Text = title
-    Prompt.Container.Body.Content.Text = text
-
-    Prompt.Parent = NotificationParent
-    Sound.SoundId = "rbxassetid://6518811702"
-    Sound:Play()
-
-    T:Create(Prompt.Container, t, {Position = UDim2.new(0, 0, 0, 0)}):Play()
-
-    Prompt.AutomaticSize = Enum.AutomaticSize.Y
-    Prompt.Container.AutomaticSize = Enum.AutomaticSize.Y
-    Prompt.Container.Body.AutomaticSize = Enum.AutomaticSize.Y
-    Prompt.Container.Body.Content.AutomaticSize = Enum.AutomaticSize.Y
-
-    Prompt.Container.Top.Exit.Button.MouseButton1Click:Connect(function()
-        T:Create(Prompt.Container, t, {Position = UDim2.new(1.15, 0, 0, 0)}):Play()
-        wait(0.48)
-        Prompt:Destroy()
-    end)
-    
-    Prompt.Container.Top.Exit.Visible = close
-
-    wait(1)
-
-    Sound:Destroy()
-    
-    spawn(function()
-        if typeof(closeTime) == "number" then
-            task.wait(closeTime)
-            local s = pcall(function()
-                T:Create(Prompt.Container, t, {Position = UDim2.new(1.15, 0, 0, 0)}):Play()
-                wait(0.48)
-                Prompt:Destroy()
-            end)
-            if not s then
-                print('Already closed.')
-            end
-        end
-    end)
-end
-
-local lib = {}
-
-function lib.prompt(title, description, closeTime)
-    prompt(title, description, closeTime, true)
-end
-
-return lib -- updateddddd
